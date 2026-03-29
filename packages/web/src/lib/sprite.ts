@@ -56,42 +56,42 @@ function cc(col: Color, a = 1): string {
 function p(s: string): number[] { return s.split('').map(c => c === '.' ? 0 : parseInt(c)) }
 
 const TEMPLATES: Record<string, number[][]> = {
-  // Blob — round, friendly, Kirby-like
-  blob: [
+  // Jellyfish — dome top with dangling tentacles
+  jellyfish: [
     p('....11111111....'),
     p('..113333333311..'),
     p('.12333333333321.'),
-    p('.12333333333321.'),
-    p('1233366366332221'),
-    p('1233377377332221'),
-    p('1222268268222221'),
-    p('1222222222222221'),
-    p('1225222992225221'),
-    p('1225555555555521'),
-    p('1225555555555521'),
-    p('.12222222222221.'),
-    p('.12222222222221.'),
-    p('..112222222211..'),
-    p('...1111..1111...'),
-    p('................'),
-  ],
-  // Cat — pointy ears, mischievous
-  cat: [
-    p('.14..........41.'),
-    p('.141........141.'),
-    p('.1441....11441..'),
-    p('.12441133144221.'),
-    p('1223331133332221'),
+    p('1233333333333221'),
     p('1222266266222221'),
     p('1222277277222221'),
-    p('1252228228255221'),
-    p('1255222222555521'),
-    p('.125222992255521'),
-    p('.1255555555521..'),
-    p('..12222222221...'),
-    p('..12212222121...'),
-    p('...11.1221.11...'),
-    p('......1111......'),
+    p('1222282282222221'),
+    p('.12222992222221.'),
+    p('..112222222211..'),
+    p('..1.12.12.12.1..'),
+    p('.1..12.12.12..1.'),
+    p('.1..12.12.12..1.'),
+    p('....12..2.12....'),
+    p('....1...2..1....'),
+    p('....1......1....'),
+    p('................'),
+  ],
+  // Fox — tall narrow, standing upright, big bushy tail
+  fox: [
+    p('..14......41....'),
+    p('..141....141....'),
+    p('..12211112211...'),
+    p('..12266266221...'),
+    p('..12277277221...'),
+    p('..12282282221...'),
+    p('...1229922.1....'),
+    p('...12555521.....'),
+    p('...122222211111.'),
+    p('...122222233331.'),
+    p('...12222223333.1'),
+    p('...1222221.3331.'),
+    p('...121.121..11..'),
+    p('...11...11......'),
+    p('................'),
     p('................'),
   ],
   // Ghost — floaty, no legs, wavy bottom
@@ -113,23 +113,23 @@ const TEMPLATES: Record<string, number[][]> = {
     p('1..1221...1221..1'),
     p('....11.....11...'),
   ],
-  // Dragon — wings, fierce, angular
-  dragon: [
-    p('..44........44..'),
-    p('.4144......4414.'),
-    p('.41144....41144.'),
-    p('4211144114411124'),
-    p('4222111111112224'),
-    p('.12233366332221.'),
-    p('.12233377332221.'),
-    p('.12233283322221.'),
-    p('12225222222252214'),
-    p('12255229922552214'),
-    p('.1255555555521.4'),
-    p('.12222222222214.'),
-    p('..122211112221..'),
-    p('..1221..11221...'),
-    p('...11....111....'),
+  // Bat — wide wingspan, tiny body center
+  bat: [
+    p('................'),
+    p('44.............44'),
+    p('414...1111...414'),
+    p('4214.133321.4124'),
+    p('42214166621.4124'),
+    p('.22141776214124.'),
+    p('.221418821.4124.'),
+    p('..2219921..412..'),
+    p('..2255521..42...'),
+    p('...12221..42....'),
+    p('....1221.42.....'),
+    p('....1111.4......'),
+    p('................'),
+    p('................'),
+    p('................'),
     p('................'),
   ],
   // Slime — amorphous, blobby, sits on ground
@@ -151,42 +151,42 @@ const TEMPLATES: Record<string, number[][]> = {
     p('1111111111111111'),
     p('................'),
   ],
-  // Owl — wide, big eyes, wisdom
-  owl: [
-    p('...144444441....'),
-    p('..14411111441...'),
-    p('.1441222214412..'),
-    p('.142222222241...'),
-    p('1422666266622421'),
-    p('1422677277622421'),
-    p('1422682287222421'),
-    p('.142222222241...'),
-    p('.125222992521...'),
-    p('.1255555555521..'),
-    p('.1255555555521..'),
-    p('.12222222222221.'),
-    p('..122222222221..'),
-    p('..12221..12221..'),
-    p('...111....111...'),
+  // Cyclops — one huge eye dominates, small round body
+  cyclops: [
+    p('................'),
+    p('....111111......'),
+    p('...1666666611...'),
+    p('..166666666661..'),
+    p('.1666677776661..'),
+    p('.1666677776661..'),
+    p('.1666688776661..'),
+    p('..166666666661..'),
+    p('...1666666611...'),
+    p('...112222211....'),
+    p('...125555521....'),
+    p('...129922221....'),
+    p('...122222221....'),
+    p('...12.1..121....'),
+    p('....1.1..1.1....'),
     p('................'),
   ],
-  // Bunny — long ears, cute, bouncy
-  bunny: [
-    p('...41....14.....'),
-    p('...41....14.....'),
-    p('...41....14.....'),
-    p('..1421..1241....'),
-    p('..12211112211...'),
-    p('.12233333332211.'),
-    p('.12236623662211.'),
-    p('.12237723772211.'),
-    p('.12238223822211.'),
-    p('1225522299225521'),
-    p('1225555555555521'),
-    p('1222555555552221'),
-    p('.12222222222221.'),
-    p('..122211112221..'),
-    p('...1111..1111...'),
+  // Turtle — big shell dome, tiny head poking out
+  turtle: [
+    p('................'),
+    p('................'),
+    p('11..44444444....'),
+    p('1214444444441...'),
+    p('1271444244441...'),
+    p('.181442442441...'),
+    p('.19.444444441...'),
+    p('....44444444....'),
+    p('...1111111111...'),
+    p('..155555555551..'),
+    p('..122222222221..'),
+    p('..122222222221..'),
+    p('..111111111111..'),
+    p('..12..1..1..21..'),
+    p('..11..1..1..11..'),
     p('................'),
   ],
   // Crab — wide, pincers, legs
@@ -251,19 +251,20 @@ const TEMPLATES: Record<string, number[][]> = {
 type TemplateKey = keyof typeof TEMPLATES
 
 function pickTemplate(t: Traits): TemplateKey {
-  const { energy: e, stability: s, complexity: c, curiosity: cu, warmth: w } = t
+  const { energy: e, stability: s, complexity: c, curiosity: cu, warmth: w, intensity: i } = t
 
-  // Map trait combinations to templates
-  if (c > 0.7 && s < 0.3) return 'serpent'
-  if (c > 0.65 && e > 0.6) return 'dragon'
-  if (e < 0.3 && s < 0.4) return 'slime'
-  if (w < 0.3 && c > 0.5) return 'crab'
-  if (cu > 0.75 && s > 0.5) return 'owl'
-  if (e > 0.7 && s > 0.5) return 'bunny'
-  if (w > 0.6 && e > 0.4 && s > 0.4) return 'cat'
-  if (c > 0.5 && e < 0.5) return 'mushroom'
-  if (w < 0.35 && e < 0.5) return 'ghost'
-  return 'blob'
+  // Each template has a distinct trait signature — ordered by specificity
+  if (c > 0.7 && s < 0.3) return 'serpent'     // complex + chaotic = snake
+  if (cu > 0.75 && c < 0.4) return 'cyclops'    // very curious but simple = one big eye
+  if (e > 0.65 && i > 0.5) return 'bat'         // energetic + intense = bat
+  if (w < 0.25 && c > 0.5) return 'crab'        // cold + complex = crab
+  if (e < 0.3 && s < 0.4) return 'slime'        // low energy + unstable = slime
+  if (s > 0.7 && e < 0.4) return 'turtle'       // very stable + low energy = turtle
+  if (w < 0.35 && e < 0.55) return 'ghost'      // cold + calm = ghost
+  if (w > 0.55 && e > 0.5 && s > 0.4) return 'fox'  // warm + energetic + stable = fox
+  if (c > 0.5 && e < 0.5) return 'mushroom'     // complex + sedentary = mushroom
+  if (e < 0.4 && cu > 0.5) return 'jellyfish'   // calm + curious = jellyfish
+  return 'jellyfish' // default fallback
 }
 
 export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
@@ -319,7 +320,7 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   }
 
   // Pick template
-  const templateKey = stage === 'hatchling' ? 'blob' : pickTemplate(traits)
+  const templateKey = stage === 'hatchling' ? 'jellyfish' : pickTemplate(traits)
   const template = TEMPLATES[templateKey]
 
   // Render template to pixel grid with palette
