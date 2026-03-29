@@ -1,0 +1,7 @@
+{
+  "name": "mochi",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}

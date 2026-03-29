@@ -1,0 +1,19 @@
+{
+  "name": "@mochi/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "migrate": "bun src/db/migrate.ts"
+  },
+  "dependencies": {
+    "hono": "^4.0.0",
+    "bcrypt": "^5.1.0",
+    "jose": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0"
+  }
+}
