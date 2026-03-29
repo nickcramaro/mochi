@@ -8,7 +8,10 @@ interface Props {
   pixelScale?: number
 }
 
-export default function MochiCanvas({ traits, stage, dormancy, pixelScale = 8 }: Props) {
+const STAGE_SCALE: Record<string, number> = { egg: 8, hatchling: 10, juvenile: 11, adult: 12, elder: 14 }
+
+export default function MochiCanvas({ traits, stage, dormancy, pixelScale }: Props) {
+  const scale = pixelScale ?? STAGE_SCALE[stage] ?? 10
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [frame, setFrame] = useState(0)
 
@@ -27,8 +30,8 @@ export default function MochiCanvas({ traits, stage, dormancy, pixelScale = 8 }:
     if (!canvas) return
 
     const { pixels, size } = generateSprite(traits, stage, frame)
-    canvas.width = size * pixelScale
-    canvas.height = size * pixelScale
+    canvas.width = size * scale
+    canvas.height = size * scale
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -41,7 +44,7 @@ export default function MochiCanvas({ traits, stage, dormancy, pixelScale = 8 }:
         const color = pixels[y][x]
         if (color) {
           ctx.fillStyle = color
-          ctx.fillRect(x * pixelScale, y * pixelScale, pixelScale, pixelScale)
+          ctx.fillRect(x * scale, y * scale, scale, scale)
         }
       }
     }
@@ -53,13 +56,13 @@ export default function MochiCanvas({ traits, stage, dormancy, pixelScale = 8 }:
 
       // Z's
       ctx.fillStyle = '#8888cc'
-      ctx.font = `${pixelScale * 3}px monospace`
-      const zOffset = Math.sin(frame * 0.3) * pixelScale * 2
+      ctx.font = `${scale * 3}px monospace`
+      const zOffset = Math.sin(frame * 0.3) * scale * 2
       ctx.fillText('z', canvas.width * 0.65 + zOffset, canvas.height * 0.25 - zOffset)
-      ctx.font = `${pixelScale * 2}px monospace`
+      ctx.font = `${scale * 2}px monospace`
       ctx.fillText('z', canvas.width * 0.72 + zOffset * 1.5, canvas.height * 0.15 - zOffset * 1.5)
     }
-  }, [traits, stage, frame, pixelScale, dormancy])
+  }, [traits, stage, frame, scale, dormancy])
 
   return (
     <canvas
