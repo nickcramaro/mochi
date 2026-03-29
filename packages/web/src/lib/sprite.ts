@@ -17,24 +17,46 @@ export type Stage = 'egg' | 'hatchling' | 'juvenile' | 'adult' | 'elder'
 
 interface Color { r: number; g: number; b: number }
 
-// Wider palette with more dramatic hue variation
+// 12 palettes: warmth is primary axis, energy+intensity+stability are secondary selectors
+// [body, outline, highlight, accent, belly]
 const PALETTES: Record<string, Color[]> = {
-  // [body, outline, highlight, accent, belly]
-  ice:    [{ r: 70, g: 140, b: 220 }, { r: 30, g: 70, b: 140 }, { r: 150, g: 200, b: 255 }, { r: 40, g: 200, b: 230 }, { r: 120, g: 175, b: 240 }],
-  storm:  [{ r: 90, g: 90, b: 160 }, { r: 40, g: 40, b: 90 }, { r: 150, g: 150, b: 210 }, { r: 130, g: 80, b: 200 }, { r: 120, g: 120, b: 180 }],
-  moss:   [{ r: 90, g: 170, b: 100 }, { r: 40, g: 100, b: 50 }, { r: 150, g: 220, b: 150 }, { r: 60, g: 200, b: 130 }, { r: 130, g: 195, b: 140 }],
-  neutral:[{ r: 170, g: 145, b: 195 }, { r: 110, g: 85, b: 140 }, { r: 215, g: 195, b: 235 }, { r: 180, g: 120, b: 200 }, { r: 195, g: 175, b: 215 }],
-  sunset: [{ r: 230, g: 130, b: 70 }, { r: 170, g: 75, b: 30 }, { r: 255, g: 195, b: 120 }, { r: 240, g: 85, b: 80 }, { r: 245, g: 175, b: 120 }],
-  fire:   [{ r: 220, g: 80, b: 50 }, { r: 140, g: 40, b: 25 }, { r: 255, g: 160, b: 80 }, { r: 255, g: 200, b: 50 }, { r: 230, g: 130, b: 80 }],
-  solar:  [{ r: 240, g: 190, b: 60 }, { r: 180, g: 120, b: 20 }, { r: 255, g: 230, b: 130 }, { r: 255, g: 140, b: 60 }, { r: 250, g: 210, b: 100 }],
+  ice:      [{ r: 70, g: 140, b: 220 }, { r: 30, g: 70, b: 140 }, { r: 150, g: 200, b: 255 }, { r: 40, g: 200, b: 230 }, { r: 120, g: 175, b: 240 }],
+  storm:    [{ r: 80, g: 70, b: 150 }, { r: 35, g: 30, b: 85 }, { r: 140, g: 130, b: 210 }, { r: 140, g: 60, b: 200 }, { r: 110, g: 100, b: 170 }],
+  slate:    [{ r: 100, g: 120, b: 140 }, { r: 50, g: 60, b: 75 }, { r: 160, g: 175, b: 195 }, { r: 80, g: 160, b: 180 }, { r: 130, g: 145, b: 165 }],
+  teal:     [{ r: 50, g: 160, b: 160 }, { r: 20, g: 90, b: 95 }, { r: 120, g: 220, b: 210 }, { r: 40, g: 200, b: 180 }, { r: 90, g: 185, b: 180 }],
+  moss:     [{ r: 90, g: 170, b: 100 }, { r: 40, g: 100, b: 50 }, { r: 150, g: 220, b: 150 }, { r: 60, g: 200, b: 130 }, { r: 130, g: 195, b: 140 }],
+  lavender: [{ r: 170, g: 140, b: 200 }, { r: 105, g: 80, b: 140 }, { r: 215, g: 190, b: 240 }, { r: 200, g: 110, b: 210 }, { r: 195, g: 170, b: 220 }],
+  rose:     [{ r: 200, g: 120, b: 140 }, { r: 130, g: 60, b: 80 }, { r: 240, g: 180, b: 195 }, { r: 220, g: 80, b: 120 }, { r: 220, g: 160, b: 175 }],
+  peach:    [{ r: 230, g: 160, b: 120 }, { r: 160, g: 90, b: 60 }, { r: 255, g: 210, b: 180 }, { r: 220, g: 120, b: 90 }, { r: 240, g: 190, b: 160 }],
+  sunset:   [{ r: 230, g: 130, b: 70 }, { r: 170, g: 75, b: 30 }, { r: 255, g: 195, b: 120 }, { r: 240, g: 85, b: 80 }, { r: 245, g: 175, b: 120 }],
+  fire:     [{ r: 220, g: 75, b: 45 }, { r: 140, g: 35, b: 20 }, { r: 255, g: 155, b: 75 }, { r: 255, g: 200, b: 40 }, { r: 230, g: 125, b: 75 }],
+  solar:    [{ r: 240, g: 190, b: 60 }, { r: 180, g: 120, b: 20 }, { r: 255, g: 230, b: 130 }, { r: 255, g: 140, b: 60 }, { r: 250, g: 210, b: 100 }],
+  crimson:  [{ r: 180, g: 50, b: 60 }, { r: 100, g: 25, b: 30 }, { r: 230, g: 110, b: 110 }, { r: 255, g: 80, b: 50 }, { r: 200, g: 90, b: 90 }],
 }
 
-function getPalette(warmth: number, intensity: number): Color[] {
-  if (warmth < 0.2) return intensity > 0.6 ? PALETTES.storm : PALETTES.ice
-  if (warmth < 0.4) return PALETTES.moss
-  if (warmth < 0.6) return PALETTES.neutral
-  if (warmth < 0.8) return PALETTES.sunset
-  return intensity > 0.6 ? PALETTES.fire : PALETTES.solar
+function getPalette(warmth: number, intensity: number, energy: number, stability: number): Color[] {
+  // Cold range (warmth 0-0.25): ice, storm, slate based on intensity+stability
+  if (warmth < 0.25) {
+    if (intensity > 0.6) return PALETTES.storm
+    if (stability > 0.6) return PALETTES.slate
+    return PALETTES.ice
+  }
+  // Cool range (0.25-0.45): teal, moss based on energy
+  if (warmth < 0.45) {
+    return energy > 0.5 ? PALETTES.moss : PALETTES.teal
+  }
+  // Neutral range (0.45-0.6): lavender, rose based on intensity
+  if (warmth < 0.6) {
+    return intensity > 0.4 ? PALETTES.rose : PALETTES.lavender
+  }
+  // Warm range (0.6-0.8): peach, sunset based on energy
+  if (warmth < 0.8) {
+    return energy > 0.6 ? PALETTES.sunset : PALETTES.peach
+  }
+  // Hot range (0.8+): solar, fire, crimson based on intensity+energy
+  if (intensity > 0.6) return PALETTES.crimson
+  if (energy > 0.6) return PALETTES.fire
+  return PALETTES.solar
 }
 
 function c(col: Color, a = 1): string {
@@ -68,7 +90,7 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   size: number
 } {
   const gs = SIZES[stage]
-  const pal = getPalette(traits.warmth, traits.intensity)
+  const pal = getPalette(traits.warmth, traits.intensity, traits.energy, traits.stability)
   const [body, outline, highlight, accent, belly] = pal
   const px: (string | null)[][] = Array.from({ length: gs }, () => Array(gs).fill(null))
   const cx = Math.floor(gs / 2)
@@ -96,10 +118,11 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   }
 
   // ── BODY MORPHOLOGY ──────────────────────────────────
-  // Energy: tall/thin (high) vs squat/wide (low)
+  // Energy: tall/thin (high) vs squat/wide (low) — now much more dramatic
   // Stability: smooth (high) vs jagged/blobby (low)
-  const heightRatio = 0.85 + traits.energy * 0.35  // 0.85-1.2
-  const widthRatio = 1.25 - traits.energy * 0.35   // 0.9-1.25
+  // Curiosity also affects head-to-body ratio (curious = bigger head area)
+  const heightRatio = 0.65 + traits.energy * 0.7   // 0.65-1.35 (much wider range)
+  const widthRatio = 1.45 - traits.energy * 0.6    // 0.85-1.45
   const stageScale = { hatchling: 0.7, juvenile: 0.82, adult: 0.92, elder: 1.0 }[stage] || 0.85
   const baseSize = gs * 0.28 * stageScale + traits.size * gs * 0.04
 
@@ -154,11 +177,19 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   // Low complexity = simple (ears/nubs). High complexity = elaborate (wings/tentacles/antennae)
   // Energy controls size of appendages
 
-  const appendageType = traits.complexity < 0.3 ? 'nubs'
-    : traits.complexity < 0.5 ? 'ears'
-    : traits.complexity < 0.7 ? 'horns'
-    : traits.stability > 0.5 ? 'wings'
-    : 'tentacles'
+  // 7 appendage types from complexity + stability + energy
+  let appendageType: string
+  if (traits.complexity < 0.25) {
+    appendageType = 'nubs'
+  } else if (traits.complexity < 0.45) {
+    appendageType = traits.energy > 0.5 ? 'ears' : 'crest'  // ears vs single crest
+  } else if (traits.complexity < 0.65) {
+    appendageType = traits.stability > 0.5 ? 'horns' : 'spines'  // curved horns vs spiky ridge
+  } else {
+    if (traits.stability > 0.6) appendageType = 'wings'
+    else if (traits.stability > 0.3) appendageType = 'antlers'  // branching antlers
+    else appendageType = 'tentacles'
+  }
 
   const appSize = Math.floor(2 + traits.energy * (stage === 'elder' ? 7 : stage === 'adult' ? 5 : 3))
 
@@ -181,6 +212,17 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
         }
       }
     }
+  } else if (appendageType === 'crest') {
+    // Single fin/crest running down center top — like a mohawk
+    const crestH = appSize + 2
+    for (let i = 0; i < crestH; i++) {
+      const w = Math.max(1, Math.floor(1.5 + Math.sin(i * 0.8) * 1.5))
+      for (let dx = -w; dx <= w; dx++) {
+        if (Math.abs(dx) === w) set(px, bodyTop - i, cx + dx, c(outline), gs)
+        else set(px, bodyTop - i, cx + dx, c(accent), gs)
+      }
+    }
+    set(px, bodyTop - crestH, cx, c(highlight), gs) // tip
   } else if (appendageType === 'horns') {
     // Curved horns
     for (const side of [-1, 1]) {
@@ -193,8 +235,38 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
           else set(px, bodyTop - i, hx + curve + dx, c(accent), gs)
         }
       }
-      // Tip glow
       set(px, bodyTop - appSize, hx + Math.floor(side * appSize / 2), c(highlight), gs)
+    }
+  } else if (appendageType === 'spines') {
+    // Spiky ridge — multiple short sharp spikes across the top
+    const spineCount = Math.floor(3 + traits.complexity * 3)
+    const spread = bw * 0.8
+    for (let s = 0; s < spineCount; s++) {
+      const sx = cx + Math.floor(-spread / 2 + (s / (spineCount - 1)) * spread)
+      const sHeight = Math.floor(2 + (1 - Math.abs(s - spineCount / 2) / (spineCount / 2)) * appSize * 0.7)
+      for (let i = 0; i < sHeight; i++) {
+        set(px, bodyTop - i, sx, c(accent), gs)
+        if (i === 0) { set(px, bodyTop, sx - 1, c(outline), gs); set(px, bodyTop, sx + 1, c(outline), gs) }
+      }
+      set(px, bodyTop - sHeight, sx, c(highlight), gs)
+    }
+  } else if (appendageType === 'antlers') {
+    // Branching antler trees on both sides
+    for (const side of [-1, 1]) {
+      const ax = cx + side * Math.floor(bw * 0.4)
+      // Main trunk
+      for (let i = 0; i < appSize; i++) {
+        set(px, bodyTop - i, ax, c(accent), gs)
+        // Branches at intervals
+        if (i > 1 && i % 3 === 0 && i < appSize - 1) {
+          const branchLen = Math.floor(2 + (i / appSize) * 3)
+          for (let b = 1; b <= branchLen; b++) {
+            set(px, bodyTop - i - b, ax + side * b, c(accent), gs)
+          }
+          set(px, bodyTop - i - branchLen, ax + side * branchLen, c(highlight), gs)
+        }
+      }
+      set(px, bodyTop - appSize, ax, c(highlight), gs)
     }
   } else if (appendageType === 'wings') {
     // Spread wings on sides
@@ -250,45 +322,44 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   }
 
   // ── FACE TYPE ────────────────────────────────────────
-  // Curiosity controls eye count and size
-  // warmth controls expression
+  // Curiosity: eye count (1/2/3) and size
+  // Energy: eye shape (round vs narrow/tall vs wide/flat)
+  // Stability: eye symmetry
 
   const eyeY = cy - Math.floor(bh * 0.15)
   const eyeCount = traits.curiosity > 0.85 ? 3 : traits.curiosity < 0.2 ? 1 : 2
   const eyeR = Math.max(1, Math.floor(1.5 + traits.curiosity * (stage === 'elder' ? 2.5 : 2)))
 
+  // Eye shape: energy makes eyes tall/narrow, low energy makes them wide/sleepy
+  const eyeRX = Math.max(1, Math.floor(eyeR * (1.3 - traits.energy * 0.6)))  // wide when low energy
+  const eyeRY = Math.max(1, Math.floor(eyeR * (0.7 + traits.energy * 0.6)))  // tall when high energy
+
+  function drawEye(ey: number, ex: number, isThird = false) {
+    const erx = isThird ? Math.max(1, eyeRX - 1) : eyeRX
+    const ery = isThird ? Math.max(1, eyeRY - 1) : eyeRY
+    // Sclera
+    fillEllipse(px, ey, ex, erx, ery, '#e8e8f0', gs)
+    // Pupil — intensity makes pupils smaller (alert), low intensity bigger (relaxed)
+    const pupilScale = 0.5 + (1 - traits.intensity) * 0.3
+    const prx = Math.max(1, Math.floor(erx * pupilScale))
+    const pry = Math.max(1, Math.floor(ery * pupilScale))
+    fillEllipse(px, ey, ex, prx, pry, isThird ? c(accent) : '#1a1a2e', gs)
+    // Shine
+    set(px, ey - Math.floor(ery * 0.4), ex + Math.floor(erx * 0.3), '#ffffff', gs)
+    if (erx >= 2) set(px, ey - Math.floor(ery * 0.4), ex + Math.floor(erx * 0.3) + 1, '#ffffff', gs)
+  }
+
   if (eyeCount === 1) {
-    // Cyclops eye — center, bigger
-    const bigR = eyeR + 1
-    fillCircle(px, eyeY, cx, bigR, '#e8e8f0', gs)
-    fillCircle(px, eyeY, cx, Math.max(1, bigR - 1), '#1a1a2e', gs)
-    set(px, eyeY - Math.floor(bigR * 0.4), cx + 1, '#ffffff', gs)
-    set(px, eyeY - Math.floor(bigR * 0.4), cx + 2, '#ffffff', gs)
+    drawEye(eyeY, cx)
   } else if (eyeCount === 3) {
-    // Three eyes — two normal + forehead eye
     const spread = Math.floor(bw * 0.35)
-    for (const side of [-1, 1]) {
-      const ex = cx + side * spread
-      fillCircle(px, eyeY, ex, eyeR, '#e8e8f0', gs)
-      fillCircle(px, eyeY, ex, Math.max(1, eyeR - 1), '#1a1a2e', gs)
-      set(px, eyeY - Math.floor(eyeR * 0.4), ex + 1, '#ffffff', gs)
-    }
-    // Third eye (smaller, above)
-    const thirdY = eyeY - Math.floor(bh * 0.3)
-    const thirdR = Math.max(1, eyeR - 1)
-    fillCircle(px, thirdY, cx, thirdR, '#e8e8f0', gs)
-    fillCircle(px, thirdY, cx, Math.max(1, thirdR - 1), c(accent), gs)
-    set(px, thirdY - 1, cx, '#ffffff', gs)
+    drawEye(eyeY, cx - spread)
+    drawEye(eyeY, cx + spread)
+    drawEye(eyeY - Math.floor(bh * 0.3), cx, true)
   } else {
-    // Standard two eyes
     const spread = Math.floor(bw * 0.35)
-    for (const side of [-1, 1]) {
-      const ex = cx + side * spread
-      fillCircle(px, eyeY, ex, eyeR, '#e8e8f0', gs)
-      fillCircle(px, eyeY, ex, Math.max(1, eyeR - 1), '#1a1a2e', gs)
-      set(px, eyeY - Math.floor(eyeR * 0.4), ex + 1, '#ffffff', gs)
-      if (eyeR >= 2) set(px, eyeY - Math.floor(eyeR * 0.4), ex + 2, '#ffffff', gs)
-    }
+    drawEye(eyeY, cx - spread)
+    drawEye(eyeY, cx + spread)
   }
 
   // Mouth
