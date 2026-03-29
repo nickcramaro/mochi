@@ -1,5 +1,5 @@
-const LEARNING_RATE = 0.03
-const SIZE_INCREMENT = 0.002
+const LEARNING_RATE = 0.012
+const SIZE_INCREMENT = 0.001
 
 const STAGE_THRESHOLDS = {
   egg: 0,
@@ -47,14 +47,23 @@ export function evolve(traits: Traits, totalSessions: number, session: SessionDa
 
   const isNight = ['night', 'late_night'].includes(session.time_of_day)
 
+  // Traits drift toward their signal. No signal = gentle decay toward 0.5
+  const DECAY = 0.003
+  function nudge(current: number, signal: number): number {
+    // Signal pushes trait, absence pulls toward 0.5
+    const push = signal * LEARNING_RATE
+    const pull = (0.5 - current) * DECAY
+    return clamp(current + push + pull)
+  }
+
   const newTraits: Traits = {
-    warmth: clamp(traits.warmth + session.sentiment_avg * LEARNING_RATE),
-    energy: clamp(traits.energy + (session.completed ? 1 : -0.5) * LEARNING_RATE),
-    complexity: clamp(traits.complexity + (toolNames.length / 10) * LEARNING_RATE),
-    stability: clamp(traits.stability + (1 - session.sentiment_variance) * LEARNING_RATE),
-    size: clamp(traits.size + SIZE_INCREMENT),
-    curiosity: clamp(traits.curiosity + (totalToolUses > 0 ? readSearchUses / totalToolUses : 0) * LEARNING_RATE),
-    intensity: clamp(traits.intensity + (isNight ? 1 : 0) * LEARNING_RATE),
+    warmth: nudge(traits.warmth, session.sentiment_avg),
+    energy: nudge(traits.energy, session.completed ? 0.8 : -0.4),
+    complexity: nudge(traits.complexity, toolNames.length / 8),
+    stability: nudge(traits.stability, 1 - session.sentiment_variance * 2),
+    size: clamp(traits.size + SIZE_INCREMENT), // size only grows, never decays
+    curiosity: nudge(traits.curiosity, totalToolUses > 0 ? (readSearchUses / totalToolUses) * 1.5 : 0),
+    intensity: nudge(traits.intensity, isNight ? 1 : -0.3),
   }
 
   const newTotal = totalSessions + 1
