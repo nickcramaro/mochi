@@ -166,8 +166,8 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
         }
       }
     }
-  } else if (stage === 'adult' || stage === 'elder') {
-    // Pointed ears/horns — height based on energy
+  } else if (stage === 'adult') {
+    // Adult: pointed horns — height based on energy
     const hornH = Math.floor(2 + traits.energy * 4)
     const hornSpread = Math.floor(bodyW * 0.55)
     const hornBase = cy + bodyOffY - Math.floor(bodyH * 0.8)
@@ -184,16 +184,76 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
         }
       }
     }
-    // Elder gets a crown/halo
-    if (stage === 'elder') {
-      const crownY = cy + bodyOffY - Math.floor(bodyH) - 2
-      for (let x = cx - 4; x <= cx + 4; x++) {
-        if ((x + crownY) % 2 === 0) set(px, crownY, x, c(accent), gs)
+  } else if (stage === 'elder') {
+    // Elder: majestic horns — taller, curved outward
+    const hornH = Math.floor(5 + traits.energy * 5)
+    const hornSpread = Math.floor(bodyW * 0.5)
+    const hornBase = cy + bodyOffY - Math.floor(bodyH * 0.8)
+    for (const side of [-1, 1]) {
+      const hx = cx + side * hornSpread
+      for (let i = 0; i < hornH; i++) {
+        const curve = Math.floor(side * (i / hornH) * 3) // curve outward
+        const width = Math.max(1, Math.floor((1 - i / hornH) * 3.5))
+        for (let dx = -width; dx <= width; dx++) {
+          const hy = hornBase - i
+          const hxx = hx + dx + curve
+          if (Math.abs(dx) === width || i === 0)
+            set(px, hy, hxx, c(outline), gs)
+          else
+            set(px, hy, hxx, c(accent), gs)
+        }
       }
-      set(px, crownY - 1, cx, c(accent), gs)
-      set(px, crownY - 1, cx - 3, c(accent), gs)
-      set(px, crownY - 1, cx + 3, c(accent), gs)
+      // Horn tip glow
+      set(px, hornBase - hornH, hx + Math.floor(side * (hornH / hornH) * 3), c(highlight), gs)
     }
+
+    // Wings / shoulder fins — energy controls size
+    const wingH = Math.floor(3 + traits.energy * 5)
+    const wingW = Math.floor(2 + traits.energy * 4)
+    const wingBaseY = cy + bodyOffY - Math.floor(bodyH * 0.3)
+    for (const side of [-1, 1]) {
+      const wingX = cx + side * Math.floor(bodyW * 0.95)
+      for (let i = 0; i < wingH; i++) {
+        const rowW = Math.floor(wingW * (1 - (i / wingH) * 0.6))
+        for (let j = 0; j < rowW; j++) {
+          const wx = wingX + side * j
+          const wy = wingBaseY - i
+          if (j === rowW - 1 || i === 0 || i === wingH - 1)
+            set(px, wy, wx, c(outline), gs)
+          else
+            set(px, wy, wx, c(accent, 0.7), gs)
+        }
+      }
+    }
+
+    // Mane / beard — warmth controls fullness
+    const maneRows = Math.floor(2 + traits.warmth * 3)
+    const maneBaseY = cy + bodyOffY + Math.floor(bodyH * 0.45)
+    const maneW = Math.floor(bodyW * 0.7)
+    for (let i = 0; i < maneRows; i++) {
+      const rowW = maneW - i
+      for (let dx = -rowW; dx <= rowW; dx++) {
+        const my = maneBaseY + i
+        const mx = cx + dx
+        if (!get(px, my, mx, gs)) {
+          if (Math.abs(dx) === rowW || i === maneRows - 1)
+            set(px, my, mx, c(outline), gs)
+          else
+            set(px, my, mx, c(body, 0.8), gs)
+        }
+      }
+    }
+
+    // Forehead gem/jewel
+    const gemY = cy + bodyOffY - Math.floor(bodyH * 0.55)
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (Math.abs(dx) + Math.abs(dy) <= 1) {
+          set(px, gemY + dy, cx + dx, c(accent), gs)
+        }
+      }
+    }
+    set(px, gemY - 1, cx, c(highlight), gs) // gem shine
   }
 
   // ── EYES ─────────────────────────────────────────────
@@ -269,7 +329,7 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
   // ── FEET ─────────────────────────────────────────────
   if (stage !== 'hatchling') {
     const footY = cy + bodyOffY + Math.floor(bodyH * 0.85)
-    const footW = Math.floor(bodyW * 0.3)
+    const footW = Math.floor(bodyW * (stage === 'elder' ? 0.4 : 0.3))
     const footSpread = Math.floor(bodyW * 0.4)
     for (const side of [-1, 1]) {
       const fx = cx + side * footSpread
@@ -280,21 +340,39 @@ export function generateSprite(traits: Traits, stage: Stage, frame = 0): {
           set(px, footY, fx + dx, c(body), gs)
         }
       }
+      // Elder gets clawed toes
+      if (stage === 'elder') {
+        for (const toe of [-footW, 0, footW]) {
+          set(px, footY + 2, fx + toe, c(outline), gs)
+        }
+      }
     }
   }
 
   // ── TAIL ─────────────────────────────────────────────
   if (stage === 'juvenile' || stage === 'adult' || stage === 'elder') {
-    const tailLen = Math.floor(2 + traits.energy * 3)
+    const baseTailLen = stage === 'elder' ? 6 : 2
+    const tailLen = Math.floor(baseTailLen + traits.energy * (stage === 'elder' ? 6 : 3))
+    const tailThick = stage === 'elder' ? 2 : 1
     const tailX = cx + Math.floor(bodyW * 0.9)
     const tailY = cy + bodyOffY + Math.floor(bodyH * 0.3)
     const tailCurve = traits.energy > 0.5 ? -1 : 1
     for (let i = 0; i < tailLen; i++) {
       const tx = tailX + i
-      const ty = tailY + Math.floor(tailCurve * Math.sin(i * 0.8) * 2)
-      set(px, ty, tx, c(outline), gs)
-      set(px, ty - 1, tx, c(body), gs)
-      if (i === tailLen - 1) set(px, ty, tx, c(accent), gs) // tip
+      const ty = tailY + Math.floor(tailCurve * Math.sin(i * 0.6) * (stage === 'elder' ? 3 : 2))
+      for (let t = -tailThick + 1; t <= 0; t++) {
+        set(px, ty + t, tx, c(outline), gs)
+      }
+      set(px, ty - tailThick, tx, c(body), gs)
+      if (i === tailLen - 1) {
+        // Tail tip — bigger flourish for elder
+        set(px, ty, tx, c(accent), gs)
+        if (stage === 'elder') {
+          set(px, ty - 1, tx, c(accent), gs)
+          set(px, ty + 1, tx, c(accent), gs)
+          set(px, ty, tx + 1, c(accent), gs)
+        }
+      }
     }
   }
 
