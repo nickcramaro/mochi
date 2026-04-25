@@ -9,11 +9,11 @@
     "migrate": "bun src/db/migrate.ts"
   },
   "dependencies": {
-    "hono": "^4.0.0",
-    "bcrypt": "^5.1.0",
-    "jose": "^6.0.0"
+    "hono": "4.0.0",
+    "bcrypt": "5.1.0",
+    "jose": "6.0.0"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.0"
+    "@types/bcrypt": "5.0.0"
   }
 }
